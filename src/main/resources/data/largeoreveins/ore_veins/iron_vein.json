@@ -1,0 +1,17 @@
+{
+  "id": "largeoreveins:iron_vein",
+  "dimension": "minecraft:overworld",
+  "replace_blocks": {
+    "minecraft:stone": "minecraft:iron_ore",
+    "minecraft:deepslate": "minecraft:deepslate_iron_ore"
+  },
+  "maxY": 63,
+  "minY": -20,
+  "size": 35,
+  "type": "VEIN",
+  "default_weight": 5,
+  "biome_weights": {
+    "#minecraft:is_forest": 8
+  },
+  "enabled": true
+}

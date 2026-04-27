@@ -1,0 +1,17 @@
+{
+  "id": "largeoreveins:lapis_vein",
+  "dimension": "minecraft:overworld",
+  "replace_blocks": {
+    "minecraft:stone": "minecraft:lapis_ore",
+    "minecraft:deepslate": "minecraft:deepslate_lapis_ore"
+  },
+  "maxY": 10,
+  "minY": -55,
+  "size": 20,
+  "type": "BLOB",
+  "default_weight": 3,
+  "biome_weights": {
+    "#minecraft:is_desert": 10
+  },
+  "enabled": true
+}

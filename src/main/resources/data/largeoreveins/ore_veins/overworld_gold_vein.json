@@ -1,0 +1,17 @@
+{
+  "id": "largeoreveins:overworld_gold_vein",
+  "dimension": "minecraft:overworld",
+  "replace_blocks": {
+    "minecraft:stone": "minecraft:gold_ore",
+    "minecraft:deepslate": "minecraft:deepslate_gold_ore"
+  },
+  "maxY": 40,
+  "minY": -40,
+  "size": 20,
+  "type": "VEIN",
+  "default_weight": 3,
+  "biome_weights": {
+    "#minecraft:is_badlands": 10
+  },
+  "enabled": true
+}

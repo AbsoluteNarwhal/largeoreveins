@@ -1,0 +1,23 @@
+package com.absolutenarwhal.largeoreveins;
+
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.ModContainer;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
+import net.neoforged.neoforge.client.gui.ConfigurationScreen;
+import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
+
+@Mod(value = LargeOreVeins.MOD_ID, dist = Dist.CLIENT)
+@EventBusSubscriber(modid = LargeOreVeins.MOD_ID, value = Dist.CLIENT)
+public class LargeOreVeinsClient {
+    public LargeOreVeinsClient(ModContainer container) {
+        container.registerExtensionPoint(IConfigScreenFactory.class, ConfigurationScreen::new);
+    }
+
+    @SubscribeEvent
+    static void onClientSetup(FMLClientSetupEvent event) {
+
+    }
+}

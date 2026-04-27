@@ -1,0 +1,17 @@
+{
+  "id": "largeoreveins:copper_vein",
+  "dimension": "minecraft:overworld",
+  "replace_blocks": {
+    "minecraft:stone": "minecraft:copper_ore",
+    "minecraft:deepslate": "minecraft:deepslate_copper_ore"
+  },
+  "maxY": 63,
+  "minY": -10,
+  "size": 40,
+  "type": "VEIN",
+  "default_weight": 7,
+  "biome_weights": {
+    "#minecraft:is_plains": 12
+  },
+  "enabled": true
+}

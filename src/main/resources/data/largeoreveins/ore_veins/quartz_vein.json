@@ -1,0 +1,16 @@
+{
+  "id": "largeoreveins:quartz_vein",
+  "dimension": "minecraft:the_nether",
+  "replace_blocks": {
+    "minecraft:netherrack": "minecraft:nether_quartz_ore"
+  },
+  "maxY": 120,
+  "minY": 10,
+  "size": 30,
+  "type": "BLOB",
+  "default_weight": 5,
+  "biome_weights": {
+    "minecraft:nether_wastes": 10
+  },
+  "enabled": true
+}

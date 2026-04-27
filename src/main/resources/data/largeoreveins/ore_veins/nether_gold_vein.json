@@ -1,0 +1,17 @@
+{
+  "id": "largeoreveins:nether_gold_vein",
+  "dimension": "minecraft:the_nether",
+  "replace_blocks": {
+    "minecraft:netherrack": "minecraft:nether_gold_ore",
+    "minecraft:blackstone": "minecraft:gilded_blackstone"
+  },
+  "maxY": 120,
+  "minY": 10,
+  "size": 35,
+  "type": "VEIN",
+  "default_weight": 5,
+  "biome_weights": {
+    "minecraft:basalt_deltas": 10
+  },
+  "enabled": true
+}

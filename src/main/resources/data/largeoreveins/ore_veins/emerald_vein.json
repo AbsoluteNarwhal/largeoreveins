@@ -1,0 +1,17 @@
+{
+  "id": "largeoreveins:emerald_vein",
+  "dimension": "minecraft:overworld",
+  "replace_blocks": {
+    "minecraft:stone": "minecraft:emerald_ore",
+    "minecraft:deepslate": "minecraft:deepslate_emerald_ore"
+  },
+  "maxY": 90,
+  "minY": 20,
+  "size": 25,
+  "type": "VEIN",
+  "default_weight": 0,
+  "biome_weights": {
+    "#minecraft:is_mountain": 15
+  },
+  "enabled": true
+}

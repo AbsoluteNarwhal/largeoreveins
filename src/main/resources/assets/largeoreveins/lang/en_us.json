@@ -1,0 +1,15 @@
+{
+  "largeoreveins.configuration.title": "Large Ore Veins Configs",
+  "largeoreveins.configuration.section.largeoreveins.common.toml": "Large Ore Veins Configs",
+  "largeoreveins.configuration.section.largeoreveins.common.toml.title": "Large Ore Veins Configs",
+  "largeoreveins.configuration.chunksPerVein": "Chunks per ore vein",
+
+  "ore_vein.largeoreveins.coal_vein": "Coal Vein",
+  "ore_vein.largeoreveins.copper_vein": "Copper Vein",
+  "ore_vein.largeoreveins.diamond_vein": "Diamond Vein",
+  "ore_vein.largeoreveins.emerald_vein": "Emerald Vein",
+  "ore_vein.largeoreveins.iron_vein": "Iron Vein",
+  "ore_vein.largeoreveins.lapis_vein": "Lapis Lazuli Vein",
+  "ore_vein.largeoreveins.coal_vein": "Gold Vein (Overworld)",
+  "ore_vein.largeoreveins.redstone_vein": "Redstone Vein"
+}

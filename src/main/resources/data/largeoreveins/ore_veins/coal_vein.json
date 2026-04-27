@@ -1,0 +1,17 @@
+{
+  "id": "largeoreveins:coal_vein",
+  "dimension": "minecraft:overworld",
+  "replace_blocks": {
+    "minecraft:stone": "minecraft:coal_ore",
+    "minecraft:deepslate": "minecraft:deepslate_coal_ore"
+  },
+  "maxY": 80,
+  "minY": 0,
+  "size": 50,
+  "type": "BLOB",
+  "default_weight": 7,
+  "biome_weights": {
+    "#minecraft:is_ocean": 10
+  },
+  "enabled": true
+}

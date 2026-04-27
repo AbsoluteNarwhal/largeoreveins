@@ -1,0 +1,17 @@
+{
+  "id": "largeoreveins:redstone_vein",
+  "dimension": "minecraft:overworld",
+  "replace_blocks": {
+    "minecraft:stone": "minecraft:redstone_ore",
+    "minecraft:deepslate": "minecraft:deepslate_redstone_ore"
+  },
+  "maxY": 0,
+  "minY": -50,
+  "size": 40,
+  "type": "PLATE",
+  "default_weight": 4,
+  "biome_weights": {
+    "#minecraft:is_swamp": 6
+  },
+  "enabled": true
+}
