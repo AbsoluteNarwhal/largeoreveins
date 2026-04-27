@@ -20,8 +20,9 @@ Certain ores are more common in certain biomes:
 ### Notes
 
 - Ancient debris still generates in the normal way. I thought massive ancient debris veins were a bit too overpowered.
-- Although certainly not required, this mod can be very fun with mods that add quarries installed. After finding an ore
-vein, you can use a quarry to excavate it.
+- JEI is supported automatically! Click on ores in JEI to see information about the veins they generate in.
+- Although certainly not required, this mod can be very fun with mods that add quarries. After finding an ore vein, 
+you can use a quarry to excavate it.
 
 ## Configuring ore veins
 
@@ -57,7 +58,8 @@ Here is an example of an ore vein configuration file:
 
 - id: A unique identifier for your vein. For custom veins, put this under your mod(pack)'s namespace, such as 
 `myawesomemod:zinc_vein`
-- dimension: The dimension to generate your vein in.
+- dimension: The dimension to generate your vein in. This can be any vanilla or modded dimension (although I cannot
+guarantee that all modded dimensions are compatible).
 - replace_blocks: Map stone blocks to ore blocks. In the example, the vein will generate iron ore in place of stone 
 and deepslate iron ore in place of deepslate.
 - maxY: The highest Y value where your vein will generate.

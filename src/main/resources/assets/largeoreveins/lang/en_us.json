@@ -4,12 +4,23 @@
   "largeoreveins.configuration.section.largeoreveins.common.toml.title": "Large Ore Veins Configs",
   "largeoreveins.configuration.chunksPerVein": "Chunks per ore vein",
 
+  "category.largeoreveins.ore_vein": "Ore Vein",
   "ore_vein.largeoreveins.coal_vein": "Coal Vein",
   "ore_vein.largeoreveins.copper_vein": "Copper Vein",
   "ore_vein.largeoreveins.diamond_vein": "Diamond Vein",
   "ore_vein.largeoreveins.emerald_vein": "Emerald Vein",
   "ore_vein.largeoreveins.iron_vein": "Iron Vein",
   "ore_vein.largeoreveins.lapis_vein": "Lapis Lazuli Vein",
-  "ore_vein.largeoreveins.coal_vein": "Gold Vein (Overworld)",
-  "ore_vein.largeoreveins.redstone_vein": "Redstone Vein"
+  "ore_vein.largeoreveins.overworld_gold_vein": "Gold Vein (Overworld)",
+  "ore_vein.largeoreveins.redstone_vein": "Redstone Vein",
+  "ore_vein.largeoreveins.nether_gold_vein": "Gold Vein (Nether)",
+  "ore_vein.largeoreveins.quartz_vein": "Quartz Vein",
+
+  "biome_tag.minecraft.is_badlands": "Badlands Biomes",
+  "biome_tag.minecraft.is_ocean": "Ocean Biomes",
+  "biome_tag.minecraft.is_plains": "Plains Biomes",
+  "biome_tag.minecraft.is_swamp": "Swamp Biomes",
+  "biome_tag.minecraft.is_mountain": "Mountain Biomes",
+  "biome_tag.minecraft.is_desert": "Desert Biomes",
+  "biome_tag.minecraft.is_jungle": "Jungle Biomes"
 }
