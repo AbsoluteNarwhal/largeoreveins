@@ -6,7 +6,7 @@
   },
   "maxY": 120,
   "minY": 10,
-  "size": 30,
+  "size": 20,
   "type": "BLOB",
   "default_weight": 5,
   "biome_weights": {
