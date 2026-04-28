@@ -32,8 +32,8 @@ public class OreVeinConfigLoader extends SimpleJsonResourceReloadListener {
 
     public static List<OreVeinConfig> getVeinsForDimension(ResourceLocation dimension) {
         return VEINS.values().stream()
-                .filter(v -> v.enabled() && v.dimension().equals(dimension))
-                .toList();
+            .filter(v -> v.enabled() && v.dimension().equals(dimension))
+            .toList();
     }
 
     @Override
@@ -62,12 +62,12 @@ public class OreVeinConfigLoader extends SimpleJsonResourceReloadListener {
     private static OreVeinConfig parse(ResourceLocation fileId, JsonObject json) {
         // id
         ResourceLocation id = ResourceLocation.parse(
-                json.get("id").getAsString()
+            json.get("id").getAsString()
         );
 
         // dimension
         ResourceLocation dimension = ResourceLocation.parse(
-                json.get("dimension").getAsString()
+            json.get("dimension").getAsString()
         );
 
         // ore blocks to use
@@ -75,24 +75,33 @@ public class OreVeinConfigLoader extends SimpleJsonResourceReloadListener {
         JsonObject rb = json.getAsJsonObject("replace_blocks");
         for (Map.Entry<String, JsonElement> e : rb.entrySet()) {
             replaceBlocks.put(
-                    ResourceLocation.parse(e.getKey()),
-                    ResourceLocation.parse(e.getValue().getAsString())
+                ResourceLocation.parse(e.getKey()),
+                ResourceLocation.parse(e.getValue().getAsString())
             );
         }
 
         // vein sizes
-        int maxY = json.get("maxY").getAsInt();
-        int minY = json.get("minY").getAsInt();
-        int size = json.get("size").getAsInt();
+        int maxY = json.has("maxY")
+                ? json.get("maxY").getAsInt()
+                : 60;
 
+        int minY = json.has("minY")
+                ? json.get("minY").getAsInt()
+                : 0;
+
+        int size = json.has("size")
+                ? json.get("size").getAsInt()
+                : 25;
+
+        // vein types
         VeinType type = json.has("type")
-                ? VeinType.valueOf(json.get("type").getAsString().toUpperCase())
-                : VeinType.VEIN;
+            ? VeinType.valueOf(json.get("type").getAsString().toUpperCase())
+            : VeinType.BLOB;
 
         // weight
         int defaultWeight = json.has("default_weight")
-                ? json.get("default_weight").getAsInt()
-                : 1;
+            ? json.get("default_weight").getAsInt()
+            : 1;
 
         // biome weights
         Map<String, Integer> biomeWeights = new LinkedHashMap<>();
@@ -107,9 +116,9 @@ public class OreVeinConfigLoader extends SimpleJsonResourceReloadListener {
         boolean enabled = !json.has("enabled") || json.get("enabled").getAsBoolean();
 
         return new OreVeinConfig(
-                id, dimension, replaceBlocks,
-                maxY, minY, size, type,
-                defaultWeight, biomeWeights, enabled
+            id, dimension, replaceBlocks,
+            maxY, minY, size, type,
+            defaultWeight, biomeWeights, enabled
         );
     }
 }

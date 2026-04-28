@@ -11,7 +11,7 @@
   "type": "VEIN",
   "default_weight": 5,
   "biome_weights": {
-    "minecraft:basalt_deltas": 10
+    "minecraft:crimson_forest": 10
   },
   "enabled": true
 }

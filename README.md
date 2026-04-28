@@ -21,8 +21,8 @@ Certain ores are more common in certain biomes:
 
 - Ancient debris still generates in the normal way. I thought massive ancient debris veins were a bit too overpowered.
 - JEI is supported automatically! Click on ores in JEI to see information about the veins they generate in.
-- Although certainly not required, this mod can be very fun with mods that add quarries. After finding an ore vein, 
-you can use a quarry to excavate it.
+- Finding ores can be quite difficult as veins are often not exposed in caves. Although not required, this mod is more
+fun when played with mods that add ways to more easily find ores.
 
 ## Configuring ore veins
 
@@ -42,7 +42,11 @@ Here is an example of an ore vein configuration file:
   "dimension": "minecraft:overworld",
   "replace_blocks": {
     "minecraft:stone": "minecraft:iron_ore",
-    "minecraft:deepslate": "minecraft:deepslate_iron_ore"
+    "minecraft:deepslate": "minecraft:deepslate_iron_ore",
+    "minecraft:andesite": "minecraft:iron_ore",
+    "minecraft:diorite": "minecraft:iron_ore",
+    "minecraft:granite": "minecraft:iron_ore",
+    "minecraft:tuff": "minecraft:deepslate_iron_ore"
   },
   "maxY": 63,
   "minY": -20,
@@ -57,22 +61,22 @@ Here is an example of an ore vein configuration file:
 ```
 
 - id: A unique identifier for your vein. For custom veins, put this under your mod(pack)'s namespace, such as 
-`myawesomemod:zinc_vein`
+`myawesomemod:zinc_vein`.
 - dimension: The dimension to generate your vein in. This can be any vanilla or modded dimension (although I cannot
 guarantee that all modded dimensions are compatible).
 - replace_blocks: Map stone blocks to ore blocks. In the example, the vein will generate iron ore in place of stone 
 and deepslate iron ore in place of deepslate.
-- maxY: The highest Y value where your vein will generate.
-- minY: The lowest Y value where your vein will generate.
-- size: The 'radius' of the vein. The effect this has depends on the vein type.
-- type: Choose between BLOB, VEIN and PLATE:
+- maxY (optional, default = 60): The highest Y value where your vein will generate.
+- minY (optional, default = 0): The lowest Y value where your vein will generate.
+- size (optional, default = 25): The 'radius' of the vein. The effect this has depends on the vein type.
+- type (optional, default = BLOB): Choose between BLOB, VEIN and PLATE:
   - BLOB is a noisy sphere shape.
-  - VEIN is a long noodle-like shape.
+  - VEIN is a long lumpy shape that looks similar to a scaled up version of vanilla ore veins.
   - PLATE is a thin, flat circular shape.
-- default_weight: The default weight in any biome. A higher number makes the vein more common.
-- biome_weights: Use this to change the weight only in specific biomes. For example, gold veins use this feature to be
-much more common in badlands biomes.
-- enabled: Set this to false to disable generation of the vein.
+- default_weight (optional, default = 1): The default weight in any biome. A higher number makes the vein more common.
+- biome_weights (optional): Use this to change the weight only in specific biomes. For example, gold veins have a 
+higher weight in badlands biomes. Note that this setting may not work for cave biomes.
+- enabled (optional, default = true): Set this to false to disable generation of the vein.
 
 To modify an existing vein, place the vein in `data/largeoreveins/ore_veins` (not your own namespace) and make sure 
 the id field matches the existing vein.

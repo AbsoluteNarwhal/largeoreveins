@@ -16,7 +16,7 @@ import java.util.List;
 public class LargeOreVeinsJeiPlugin implements IModPlugin {
 
     public static final ResourceLocation PLUGIN_ID =
-            ResourceLocation.fromNamespaceAndPath(LargeOreVeins.MOD_ID, "jei_plugin");
+        ResourceLocation.fromNamespaceAndPath(LargeOreVeins.MOD_ID, "jei_plugin");
 
     private static IJeiRuntime jeiRuntime;
     private static final List<OreVeinConfig> addedRecipes = new ArrayList<>();

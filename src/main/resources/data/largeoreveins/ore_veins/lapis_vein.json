@@ -3,13 +3,17 @@
   "dimension": "minecraft:overworld",
   "replace_blocks": {
     "minecraft:stone": "minecraft:lapis_ore",
-    "minecraft:deepslate": "minecraft:deepslate_lapis_ore"
+    "minecraft:deepslate": "minecraft:deepslate_lapis_ore",
+    "minecraft:andesite": "minecraft:lapis_ore",
+    "minecraft:diorite": "minecraft:lapis_ore",
+    "minecraft:granite": "minecraft:lapis_ore",
+    "minecraft:tuff": "minecraft:deepslate_lapis_ore"
   },
   "maxY": 10,
   "minY": -55,
   "size": 20,
   "type": "BLOB",
-  "default_weight": 3,
+  "default_weight": 2,
   "biome_weights": {
     "#minecraft:is_desert": 10
   },

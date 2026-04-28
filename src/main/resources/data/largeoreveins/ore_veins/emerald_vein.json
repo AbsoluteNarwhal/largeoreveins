@@ -3,7 +3,11 @@
   "dimension": "minecraft:overworld",
   "replace_blocks": {
     "minecraft:stone": "minecraft:emerald_ore",
-    "minecraft:deepslate": "minecraft:deepslate_emerald_ore"
+    "minecraft:deepslate": "minecraft:deepslate_emerald_ore",
+    "minecraft:andesite": "minecraft:emerald_ore",
+    "minecraft:diorite": "minecraft:emerald_ore",
+    "minecraft:granite": "minecraft:emerald_ore",
+    "minecraft:tuff": "minecraft:deepslate_emerald_ore"
   },
   "maxY": 90,
   "minY": 20,

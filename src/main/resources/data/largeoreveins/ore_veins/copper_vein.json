@@ -3,7 +3,11 @@
   "dimension": "minecraft:overworld",
   "replace_blocks": {
     "minecraft:stone": "minecraft:copper_ore",
-    "minecraft:deepslate": "minecraft:deepslate_copper_ore"
+    "minecraft:deepslate": "minecraft:deepslate_copper_ore",
+    "minecraft:andesite": "minecraft:copper_ore",
+    "minecraft:diorite": "minecraft:copper_ore",
+    "minecraft:granite": "minecraft:copper_ore",
+    "minecraft:tuff": "minecraft:deepslate_copper_ore"
   },
   "maxY": 63,
   "minY": -10,

@@ -3,7 +3,11 @@
   "dimension": "minecraft:overworld",
   "replace_blocks": {
     "minecraft:stone": "minecraft:iron_ore",
-    "minecraft:deepslate": "minecraft:deepslate_iron_ore"
+    "minecraft:deepslate": "minecraft:deepslate_iron_ore",
+    "minecraft:andesite": "minecraft:iron_ore",
+    "minecraft:diorite": "minecraft:iron_ore",
+    "minecraft:granite": "minecraft:iron_ore",
+    "minecraft:tuff": "minecraft:deepslate_iron_ore"
   },
   "maxY": 63,
   "minY": -20,

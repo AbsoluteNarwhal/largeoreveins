@@ -3,13 +3,17 @@
   "dimension": "minecraft:overworld",
   "replace_blocks": {
     "minecraft:stone": "minecraft:diamond_ore",
-    "minecraft:deepslate": "minecraft:deepslate_diamond_ore"
+    "minecraft:deepslate": "minecraft:deepslate_diamond_ore",
+    "minecraft:andesite": "minecraft:diamond_ore",
+    "minecraft:diorite": "minecraft:diamond_ore",
+    "minecraft:granite": "minecraft:diamond_ore",
+    "minecraft:tuff": "minecraft:deepslate_diamond_ore"
   },
   "maxY": -30,
   "minY": -55,
   "size": 10,
   "type": "BLOB",
-  "default_weight": 2,
+  "default_weight": 3,
   "biome_weights": {
     "#minecraft:is_jungle": 8
   },

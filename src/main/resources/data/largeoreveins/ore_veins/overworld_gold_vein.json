@@ -3,7 +3,11 @@
   "dimension": "minecraft:overworld",
   "replace_blocks": {
     "minecraft:stone": "minecraft:gold_ore",
-    "minecraft:deepslate": "minecraft:deepslate_gold_ore"
+    "minecraft:deepslate": "minecraft:deepslate_gold_ore",
+    "minecraft:andesite": "minecraft:gold_ore",
+    "minecraft:diorite": "minecraft:gold_ore",
+    "minecraft:granite": "minecraft:gold_ore",
+    "minecraft:tuff": "minecraft:deepslate_gold_ore"
   },
   "maxY": 40,
   "minY": -40,
