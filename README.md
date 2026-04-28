@@ -81,4 +81,10 @@ higher weight in badlands biomes. Note that this setting may not work for cave b
 To modify an existing vein, place the vein in `data/largeoreveins/ore_veins` (not your own namespace) and make sure 
 the id field matches the existing vein.
 
+Another thing to note: If you want your vein's name to be translated when viewed in JEI, add it to your language file (often `en_us.json`).
+
+```json
+"ore_vein.myawesomemod.zinc_vein": "Zinc Vein"
+```
+
 You can view more examples in `src/main/resources/data/largeoreveins/ore_veins`.
