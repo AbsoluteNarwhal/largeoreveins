@@ -5,6 +5,7 @@ import com.absolutenarwhal.largeoreveins.worldgen.OreVeinGenerator;
 import net.neoforged.neoforge.event.AddReloadListenerEvent;
 import net.neoforged.neoforge.event.level.ChunkEvent;
 import net.neoforged.neoforge.event.server.ServerStoppedEvent;
+import net.neoforged.neoforge.event.tick.ServerTickEvent;
 import org.slf4j.Logger;
 
 import com.mojang.logging.LogUtils;
@@ -48,8 +49,11 @@ public class LargeOreVeins {
     }
 
     @SubscribeEvent
-    public void onServerStarting(ServerStartingEvent event) {
+    public void onServerStarting(ServerStartingEvent event) {}
 
+    @SubscribeEvent
+    public void onServerTick(ServerTickEvent.Post event) {
+        OreVeinGenerator.onServerTick(event);
     }
 
     @SubscribeEvent
