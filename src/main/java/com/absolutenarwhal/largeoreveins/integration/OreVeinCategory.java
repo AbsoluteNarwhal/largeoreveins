@@ -21,6 +21,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -64,8 +65,13 @@ public class OreVeinCategory implements IRecipeCategory<OreVeinConfig> {
     @Override
     public void setRecipe(IRecipeLayoutBuilder builder, OreVeinConfig vein, IFocusGroup focuses) {
         int x = 0;
+        List<Block> blocks = new ArrayList<>();
+
         for (ResourceLocation oreBlockId : vein.replaceBlocks().values()) {
             Block block = BuiltInRegistries.BLOCK.get(oreBlockId);
+            if (blocks.contains(block)) continue;
+            blocks.add(block);
+
             if (block != null) {
                 builder.addSlot(RecipeIngredientRole.OUTPUT, x, 0)
                     .addItemStack(new ItemStack(block.asItem()));
