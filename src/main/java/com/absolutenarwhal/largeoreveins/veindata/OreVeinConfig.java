@@ -7,6 +7,8 @@ public record OreVeinConfig(
         ResourceLocation id,
         ResourceLocation dimension,
         Map<ResourceLocation, ResourceLocation> replaceBlocks,
+        ResourceLocation rareBlock,
+        double rareBlockChance,
         int maxY,
         int minY,
         int size,

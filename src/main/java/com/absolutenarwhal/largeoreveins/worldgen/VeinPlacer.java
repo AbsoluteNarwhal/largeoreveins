@@ -46,7 +46,7 @@ public class VeinPlacer {
                     if (dist > 1.0f) continue;
                     float chance = 1.0f - (dist * 0.8f);
                     if (random.nextFloat() > chance) continue;
-                    tryPlace(vein, origin.offset(dx, dy, dz), chunk);
+                    tryPlace(vein, origin.offset(dx, dy, dz), chunk, random);
                 }
             }
         }
@@ -62,16 +62,15 @@ public class VeinPlacer {
                 if (random.nextFloat() > 1.0f - (dist * 0.6f)) continue;
                 for (int dy = 0; dy < thickness; dy++) {
                     if (dy > 0 && random.nextFloat() > 0.7f) continue;
-                    tryPlace(vein, origin.offset(dx, dy, dz), chunk);
+                    tryPlace(vein, origin.offset(dx, dy, dz), chunk, random);
                 }
             }
         }
     }
 
-    private static void tryPlace(OreVeinConfig vein, BlockPos pos, LevelChunk chunk) {
+    private static void tryPlace(OreVeinConfig vein, BlockPos pos, LevelChunk chunk, Random random) {
         if (pos.getY() < vein.minY() || pos.getY() > vein.maxY()) return;
 
-        // no accessing neighbour chunk
         ChunkPos chunkPos = chunk.getPos();
         if (pos.getX() < chunkPos.getMinBlockX() || pos.getX() > chunkPos.getMaxBlockX()) return;
         if (pos.getZ() < chunkPos.getMinBlockZ() || pos.getZ() > chunkPos.getMaxBlockZ()) return;
@@ -82,7 +81,15 @@ public class VeinPlacer {
         ResourceLocation replacement = vein.replaceBlocks().get(existingId);
         if (replacement == null) return;
 
-        Block replacementBlock = BuiltInRegistries.BLOCK.get(replacement);
-        chunk.setBlockState(pos, replacementBlock.defaultBlockState(), false);
+        // rare blocks (eg raw ore blocks)
+        boolean useRare = vein.rareBlock() != null
+                && !vein.rareBlock().equals(ResourceLocation.parse("minecraft:air"))
+                && vein.rareBlockChance() > 0
+                && random.nextDouble() < vein.rareBlockChance();
+
+        ResourceLocation blockToPlace = useRare ? vein.rareBlock() : replacement;
+        Block block = BuiltInRegistries.BLOCK.get(blockToPlace);
+
+        chunk.setBlockState(pos, block.defaultBlockState(), false);
     }
 }

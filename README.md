@@ -48,6 +48,8 @@ Here is an example of an ore vein configuration file:
     "minecraft:granite": "minecraft:iron_ore",
     "minecraft:tuff": "minecraft:deepslate_iron_ore"
   },
+  "rare_block": "minecraft:raw_iron_block",
+  "rare_block_chance": 0.05,
   "maxY": 63,
   "minY": -20,
   "size": 35,
@@ -66,6 +68,8 @@ Here is an example of an ore vein configuration file:
 guarantee that all modded dimensions are compatible).
 - replace_blocks: Map stone blocks to ore blocks. In the example, the vein will generate iron ore in place of stone 
 and deepslate iron ore in place of deepslate.
+- rare_block (optional): Sometimes replaces ores with another block. This can be used to generate raw ore blocks in veins.
+- rare_block_chance (optional, default = 0.05): Chance of replacing each ore with rare_block
 - maxY (optional, default = 60): The highest Y value where your vein will generate.
 - minY (optional, default = 0): The lowest Y value where your vein will generate.
 - size (optional, default = 25): The 'radius' of the vein. The effect this has depends on the vein type.

@@ -9,6 +9,8 @@
     "minecraft:granite": "minecraft:copper_ore",
     "minecraft:tuff": "minecraft:deepslate_copper_ore"
   },
+  "rare_block": "minecraft:raw_copper_block",
+  "rare_block_chance": 0.05,
   "maxY": 63,
   "minY": -10,
   "size": 40,

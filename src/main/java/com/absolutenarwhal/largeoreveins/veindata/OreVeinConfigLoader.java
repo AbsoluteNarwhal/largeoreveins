@@ -9,6 +9,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
 import net.minecraft.util.profiling.ProfilerFiller;
+import net.minecraft.world.level.block.Block;
 
 import java.util.*;
 
@@ -80,6 +81,15 @@ public class OreVeinConfigLoader extends SimpleJsonResourceReloadListener {
             );
         }
 
+        // rare block
+        ResourceLocation rareBlock = json.has("rare_block")
+                ? ResourceLocation.parse(json.get("rare_block").getAsString())
+                : ResourceLocation.parse("minecraft:air");
+
+        double rareBlockChance = json.has("rare_block_chance")
+                ? json.get("rare_block_chance").getAsFloat()
+                : 0.05;
+
         // vein sizes
         int maxY = json.has("maxY")
                 ? json.get("maxY").getAsInt()
@@ -117,6 +127,7 @@ public class OreVeinConfigLoader extends SimpleJsonResourceReloadListener {
 
         return new OreVeinConfig(
             id, dimension, replaceBlocks,
+            rareBlock, rareBlockChance,
             maxY, minY, size, type,
             defaultWeight, biomeWeights, enabled
         );

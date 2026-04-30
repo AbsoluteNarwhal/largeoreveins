@@ -9,6 +9,8 @@
     "minecraft:granite": "minecraft:gold_ore",
     "minecraft:tuff": "minecraft:deepslate_gold_ore"
   },
+  "rare_block": "minecraft:raw_gold_block",
+  "rare_block_chance": 0.05,
   "maxY": 40,
   "minY": -40,
   "size": 20,
