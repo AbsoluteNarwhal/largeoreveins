@@ -20,15 +20,15 @@ public class OreVeinGenerator {
     // how many chunks away a vein can reach
     private static final int VEIN_CHUNK_RADIUS = 3;
 
-    // How many chunks to process per tick — higher = faster generation but more lag
-    private static final int CHUNKS_PER_TICK = 10;
-
-    // Chunks waiting to be processed
+    // chunks waiting to be processed
     private static final Queue<Map.Entry<ResourceLocation, ChunkPos>> PENDING =
             new ConcurrentLinkedQueue<>();
 
     // chunks whose vein roll has already been decided (origin stored or no vein)
     private static final Map<ResourceLocation, Set<Long>> ROLLED_CHUNKS = new HashMap<>();
+
+    // chunks that have already been placed
+    private static final Map<ResourceLocation, Set<Long>> PLACED_CHUNKS = new HashMap<>();
 
     // vein origins that were actually spawned
     private static final Map<ResourceLocation, Map<Long, VeinOrigin>> VEIN_ORIGINS = new HashMap<>();
@@ -37,6 +37,7 @@ public class OreVeinGenerator {
         PENDING.clear();
         ROLLED_CHUNKS.clear();
         VEIN_ORIGINS.clear();
+        PLACED_CHUNKS.clear();
     }
 
     public static void onChunkLoad(ChunkEvent.Load event) {
@@ -46,14 +47,16 @@ public class OreVeinGenerator {
         ResourceLocation dimension = level.dimension().location();
         ChunkPos pos = event.getChunk().getPos();
 
-        // add chunk to queue for processing
+        Set<Long> placed = PLACED_CHUNKS.getOrDefault(dimension, Collections.emptySet());
+        if (placed.contains(pos.toLong())) return;
+
         PENDING.add(Map.entry(dimension, pos));
     }
 
     public static void onServerTick(ServerTickEvent.Post event) {
         int processed = 0;
 
-        while (!PENDING.isEmpty() && processed < CHUNKS_PER_TICK) {
+        while (!PENDING.isEmpty() && processed < Config.CHUNKS_PER_TICK.getAsInt()) {
             Map.Entry<ResourceLocation, ChunkPos> entry = PENDING.poll();
             ResourceLocation dimension = entry.getKey();
             ChunkPos pos = entry.getValue();
@@ -71,11 +74,24 @@ public class OreVeinGenerator {
     }
 
     private static void processChunk(ChunkPos pos, ResourceLocation dimension, ServerLevel level) {
-        for (int dx = -VEIN_CHUNK_RADIUS; dx <= VEIN_CHUNK_RADIUS; dx++) {
-            for (int dz = -VEIN_CHUNK_RADIUS; dz <= VEIN_CHUNK_RADIUS; dz++) {
-                rollChunkIfNeeded(new ChunkPos(pos.x + dx, pos.z + dz), dimension, level);
+        boolean alreadyPlaced = !PLACED_CHUNKS.computeIfAbsent(dimension, k -> new HashSet<>())
+            .add(pos.toLong());
+
+        // cache candidates for this dimension once per call
+        List<OreVeinConfig> candidates = OreVeinConfigLoader.getVeinsForDimension(dimension)
+            .stream()
+            .filter(OreVeinConfig::enabled)
+            .toList();
+
+        if (!candidates.isEmpty()) {
+            for (int dx = -VEIN_CHUNK_RADIUS; dx <= VEIN_CHUNK_RADIUS; dx++) {
+                for (int dz = -VEIN_CHUNK_RADIUS; dz <= VEIN_CHUNK_RADIUS; dz++) {
+                    rollChunkIfNeeded(new ChunkPos(pos.x + dx, pos.z + dz), dimension, level, candidates);
+                }
             }
         }
+
+        if (alreadyPlaced) return;
 
         Map<Long, VeinOrigin> origins = VEIN_ORIGINS.getOrDefault(dimension, Collections.emptyMap());
         LevelChunk chunk = level.getChunk(pos.x, pos.z);
@@ -95,17 +111,11 @@ public class OreVeinGenerator {
         }
     }
 
-    private static void rollChunkIfNeeded(ChunkPos pos, ResourceLocation dimension, ServerLevel level) {
-        Set<Long> rolled = ROLLED_CHUNKS.computeIfAbsent(dimension, k -> new HashSet<>());
-        if (!rolled.add(pos.toLong())) return;
+    private static void rollChunkIfNeeded(ChunkPos pos, ResourceLocation dimension, ServerLevel level, List<OreVeinConfig> candidates) {
+        if (!ROLLED_CHUNKS.computeIfAbsent(dimension, k -> new HashSet<>()).add(pos.toLong())) return;
 
         Random random = seededRandom(level.getSeed(), pos.x, pos.z, dimension);
         if (random.nextInt(Config.CHUNKS_PER_VEIN.getAsInt()) != 0) return;
-
-        List<OreVeinConfig> candidates = OreVeinConfigLoader.getVeinsForDimension(dimension)
-            .stream()
-            .filter(OreVeinConfig::enabled)
-            .toList();
 
         if (candidates.isEmpty()) return;
 
