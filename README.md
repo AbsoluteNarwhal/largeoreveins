@@ -56,7 +56,7 @@ Here is an example of an ore vein configuration file:
   "type": "VEIN",
   "default_weight": 5,
   "biome_weights": {
-    "#minecraft:is_forest": 8
+    "#c:is_forest": 8
   },
   "enabled": true
 }
