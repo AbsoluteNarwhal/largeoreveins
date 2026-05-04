@@ -15,23 +15,17 @@ import net.neoforged.neoforge.event.tick.ServerTickEvent;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class OreVeinGenerator {
-    // how many chunks away a vein can reach
     private static final int VEIN_CHUNK_RADIUS = 3;
 
-    // chunks waiting to be processed
+    private static final Map<ResourceLocation, Set<Long>> ROLLED_CHUNKS = new HashMap<>();
+    private static final Map<ResourceLocation, Set<Long>> PLACED_CHUNKS = new HashMap<>();
+    private static final Map<ResourceLocation, Map<Long, VeinOrigin>> VEIN_ORIGINS = new HashMap<>();
+
     private static final Queue<Map.Entry<ResourceLocation, ChunkPos>> PENDING =
             new ConcurrentLinkedQueue<>();
-
-    // chunks whose vein roll has already been decided (origin stored or no vein)
-    private static final Map<ResourceLocation, Set<Long>> ROLLED_CHUNKS = new HashMap<>();
-
-    // chunks that have already been placed
-    private static final Map<ResourceLocation, Set<Long>> PLACED_CHUNKS = new HashMap<>();
-
-    // vein origins that were actually spawned
-    private static final Map<ResourceLocation, Map<Long, VeinOrigin>> VEIN_ORIGINS = new HashMap<>();
 
     public static void clearGeneratedChunks() {
         PENDING.clear();
@@ -47,25 +41,30 @@ public class OreVeinGenerator {
         ResourceLocation dimension = level.dimension().location();
         ChunkPos pos = event.getChunk().getPos();
 
-        Set<Long> placed = PLACED_CHUNKS.getOrDefault(dimension, Collections.emptySet());
-        if (placed.contains(pos.toLong())) return;
+        if (PLACED_CHUNKS.getOrDefault(dimension, Collections.emptySet()).contains(pos.toLong())) return;
 
         PENDING.add(Map.entry(dimension, pos));
     }
 
     public static void onServerTick(ServerTickEvent.Post event) {
         int processed = 0;
-
         while (!PENDING.isEmpty() && processed < Config.CHUNKS_PER_TICK.getAsInt()) {
             Map.Entry<ResourceLocation, ChunkPos> entry = PENDING.poll();
+            if (entry == null) break;
+
             ResourceLocation dimension = entry.getKey();
             ChunkPos pos = entry.getValue();
+
+            // skip if placed since being enqueued
+            if (PLACED_CHUNKS.getOrDefault(dimension, Collections.emptySet()).contains(pos.toLong())) continue;
 
             ServerLevel level = event.getServer().getLevel(
                     ResourceKey.create(Registries.DIMENSION, dimension)
             );
-
             if (level == null) continue;
+
+            // if chunk unloaded since being enqueued, don't drop it —
+            // it will re-enqueue itself via onChunkLoad when it reloads
             if (!level.hasChunk(pos.x, pos.z)) continue;
 
             processChunk(pos, dimension, level);
@@ -74,27 +73,28 @@ public class OreVeinGenerator {
     }
 
     private static void processChunk(ChunkPos pos, ResourceLocation dimension, ServerLevel level) {
-        boolean alreadyPlaced = !PLACED_CHUNKS.computeIfAbsent(dimension, k -> new HashSet<>())
-            .add(pos.toLong());
-
-        // cache candidates for this dimension once per call
         List<OreVeinConfig> candidates = OreVeinConfigLoader.getVeinsForDimension(dimension)
             .stream()
             .filter(OreVeinConfig::enabled)
             .toList();
 
-        if (!candidates.isEmpty()) {
-            for (int dx = -VEIN_CHUNK_RADIUS; dx <= VEIN_CHUNK_RADIUS; dx++) {
-                for (int dz = -VEIN_CHUNK_RADIUS; dz <= VEIN_CHUNK_RADIUS; dz++) {
-                    rollChunkIfNeeded(new ChunkPos(pos.x + dx, pos.z + dz), dimension, level, candidates);
-                }
+        // configs not loaded yet, re-queue for next tick
+        if (candidates.isEmpty()) {
+            PENDING.add(Map.entry(dimension, pos));
+            return;
+        }
+
+        // roll all neighbours so their origins exist before lookup
+        for (int dx = -VEIN_CHUNK_RADIUS; dx <= VEIN_CHUNK_RADIUS; dx++) {
+            for (int dz = -VEIN_CHUNK_RADIUS; dz <= VEIN_CHUNK_RADIUS; dz++) {
+                rollChunkIfNeeded(new ChunkPos(pos.x + dx, pos.z + dz), dimension, level, candidates);
             }
         }
 
-        if (alreadyPlaced) return;
-
-        Map<Long, VeinOrigin> origins = VEIN_ORIGINS.getOrDefault(dimension, Collections.emptyMap());
+        // place after rolling so all nearby origins are populated
         LevelChunk chunk = level.getChunk(pos.x, pos.z);
+        Map<Long, VeinOrigin> origins = VEIN_ORIGINS.getOrDefault(dimension, Collections.emptyMap());
+        boolean anyPlaced = false;
 
         for (int dx = -VEIN_CHUNK_RADIUS; dx <= VEIN_CHUNK_RADIUS; dx++) {
             for (int dz = -VEIN_CHUNK_RADIUS; dz <= VEIN_CHUNK_RADIUS; dz++) {
@@ -107,7 +107,12 @@ public class OreVeinGenerator {
 
                 Random random = seededRandom(level.getSeed(), nearbyPos.x, nearbyPos.z, dimension);
                 VeinPlacer.placeInChunk(vein, origin.origin(), chunk, random);
+                anyPlaced = true;
             }
+        }
+
+        if (anyPlaced || !origins.isEmpty()) {
+            PLACED_CHUNKS.computeIfAbsent(dimension, k -> new HashSet<>()).add(pos.toLong());
         }
     }
 
@@ -117,20 +122,19 @@ public class OreVeinGenerator {
         Random random = seededRandom(level.getSeed(), pos.x, pos.z, dimension);
         if (random.nextInt(Config.CHUNKS_PER_VEIN.getAsInt()) != 0) return;
 
-        if (candidates.isEmpty()) return;
-
-        OreVeinConfig selected = selectWeightedNoLevel(candidates, random);
+        OreVeinConfig selected = selectWeighted(candidates, random);
         if (selected == null) return;
 
         int x = pos.getMinBlockX() + random.nextInt(16);
         int z = pos.getMinBlockZ() + random.nextInt(16);
         int y = selected.minY() + random.nextInt(Math.max(1, selected.maxY() - selected.minY()));
 
-        VEIN_ORIGINS.computeIfAbsent(dimension, k -> new HashMap<>())
+        VEIN_ORIGINS
+            .computeIfAbsent(dimension, k -> new HashMap<>())
             .put(pos.toLong(), new VeinOrigin(selected.id(), new BlockPos(x, y, z)));
     }
 
-    private static OreVeinConfig selectWeightedNoLevel(List<OreVeinConfig> candidates, Random random) {
+    private static OreVeinConfig selectWeighted(List<OreVeinConfig> candidates, Random random) {
         int totalWeight = candidates.stream()
             .mapToInt(OreVeinConfig::defaultWeight)
             .sum();
