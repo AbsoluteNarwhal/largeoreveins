@@ -15,7 +15,7 @@
   "type": "PLATE",
   "default_weight": 3,
   "biome_weights": {
-    "#minecraft:is_swamp": 6
+    "#c:is_swamp": 6
   },
   "enabled": true
 }

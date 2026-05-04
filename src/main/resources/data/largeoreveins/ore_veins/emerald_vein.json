@@ -11,11 +11,11 @@
   },
   "maxY": 90,
   "minY": 20,
-  "size": 25,
-  "type": "VEIN",
+  "size": 20,
+  "type": "BLOB",
   "default_weight": 0,
   "biome_weights": {
-    "#minecraft:is_mountain": 15
+    "#c:is_mountain": 15
   },
   "enabled": true
 }

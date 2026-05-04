@@ -4,18 +4,20 @@ import com.absolutenarwhal.largeoreveins.Config;
 import com.absolutenarwhal.largeoreveins.veindata.OreVeinConfig;
 import com.absolutenarwhal.largeoreveins.veindata.OreVeinConfigLoader;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.chunk.LevelChunk;
 import net.neoforged.neoforge.event.level.ChunkEvent;
 import net.neoforged.neoforge.event.tick.ServerTickEvent;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class OreVeinGenerator {
     private static final int VEIN_CHUNK_RADIUS = 3;
@@ -84,10 +86,13 @@ public class OreVeinGenerator {
             return;
         }
 
+        BlockPos centre = pos.getMiddleBlockPosition(level.getSeaLevel());
+        Holder<Biome> biome = level.getBiome(centre);
+
         // roll all neighbours so their origins exist before lookup
         for (int dx = -VEIN_CHUNK_RADIUS; dx <= VEIN_CHUNK_RADIUS; dx++) {
             for (int dz = -VEIN_CHUNK_RADIUS; dz <= VEIN_CHUNK_RADIUS; dz++) {
-                rollChunkIfNeeded(new ChunkPos(pos.x + dx, pos.z + dz), dimension, level, candidates);
+                rollChunkIfNeeded(new ChunkPos(pos.x + dx, pos.z + dz), dimension, level, candidates, biome);
             }
         }
 
@@ -116,13 +121,13 @@ public class OreVeinGenerator {
         }
     }
 
-    private static void rollChunkIfNeeded(ChunkPos pos, ResourceLocation dimension, ServerLevel level, List<OreVeinConfig> candidates) {
+    private static void rollChunkIfNeeded(ChunkPos pos, ResourceLocation dimension, ServerLevel level, List<OreVeinConfig> candidates, Holder<Biome> biome) {
         if (!ROLLED_CHUNKS.computeIfAbsent(dimension, k -> new HashSet<>()).add(pos.toLong())) return;
 
         Random random = seededRandom(level.getSeed(), pos.x, pos.z, dimension);
         if (random.nextInt(Config.CHUNKS_PER_VEIN.getAsInt()) != 0) return;
 
-        OreVeinConfig selected = selectWeighted(candidates, random);
+        OreVeinConfig selected = selectWeighted(candidates, random, biome, level);
         if (selected == null) return;
 
         int x = pos.getMinBlockX() + random.nextInt(16);
@@ -134,9 +139,9 @@ public class OreVeinGenerator {
             .put(pos.toLong(), new VeinOrigin(selected.id(), new BlockPos(x, y, z)));
     }
 
-    private static OreVeinConfig selectWeighted(List<OreVeinConfig> candidates, Random random) {
+    private static OreVeinConfig selectWeighted(List<OreVeinConfig> candidates, Random random, Holder<Biome> biome, ServerLevel level) {
         int totalWeight = candidates.stream()
-            .mapToInt(OreVeinConfig::defaultWeight)
+            .mapToInt(v -> resolveWeight(v, biome))
             .sum();
 
         if (totalWeight <= 0) return null;
@@ -144,10 +149,27 @@ public class OreVeinGenerator {
         int roll = random.nextInt(totalWeight);
         int cursor = 0;
         for (OreVeinConfig vein : candidates) {
-            cursor += vein.defaultWeight();
+            cursor += resolveWeight(vein, biome);
             if (roll < cursor) return vein;
         }
         return null;
+    }
+
+    private static int resolveWeight(OreVeinConfig vein, Holder<Biome> biome) {
+        for (Map.Entry<String, Integer> entry : vein.biomeWeights().entrySet()) {
+            String key = entry.getKey();
+            if (key.startsWith("#")) {
+                ResourceLocation tagId = ResourceLocation.parse(key.substring(1));
+                TagKey<Biome> tag = TagKey.create(Registries.BIOME, tagId);
+                if (biome.is(tag)) return entry.getValue();
+            } else {
+                ResourceLocation biomeId = ResourceLocation.parse(key);
+                if (biome.is(ResourceKey.create(Registries.BIOME, biomeId))) {
+                    return entry.getValue();
+                }
+            }
+        }
+        return vein.defaultWeight();
     }
 
     private static Random seededRandom(long worldSeed, int chunkX, int chunkZ, ResourceLocation dimension) {

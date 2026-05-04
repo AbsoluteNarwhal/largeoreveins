@@ -16,11 +16,12 @@
   "ore_vein.largeoreveins.nether_gold_vein": "Gold Vein (Nether)",
   "ore_vein.largeoreveins.quartz_vein": "Quartz Vein",
 
-  "biome_tag.minecraft.is_badlands": "Badlands Biomes",
-  "biome_tag.minecraft.is_ocean": "Ocean Biomes",
-  "biome_tag.minecraft.is_plains": "Plains Biomes",
-  "biome_tag.minecraft.is_swamp": "Swamp Biomes",
-  "biome_tag.minecraft.is_mountain": "Mountain Biomes",
-  "biome_tag.minecraft.is_desert": "Desert Biomes",
-  "biome_tag.minecraft.is_jungle": "Jungle Biomes"
+  "biome_tag.c.is_badlands": "Badlands Biomes",
+  "biome_tag.c.is_ocean": "Ocean Biomes",
+  "biome_tag.c.is_plains": "Plains Biomes",
+  "biome_tag.c.is_forest": "Plains Biomes",
+  "biome_tag.c.is_swamp": "Swamp Biomes",
+  "biome_tag.c.is_mountain": "Mountain Biomes",
+  "biome_tag.c.is_desert": "Desert Biomes",
+  "biome_tag.c.is_jungle": "Jungle Biomes"
 }

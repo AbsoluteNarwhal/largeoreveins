@@ -17,7 +17,7 @@
   "type": "VEIN",
   "default_weight": 3,
   "biome_weights": {
-    "#minecraft:is_badlands": 10
+    "#c:is_badlands": 10
   },
   "enabled": true
 }

@@ -15,7 +15,7 @@
   "type": "BLOB",
   "default_weight": 5,
   "biome_weights": {
-    "#minecraft:is_ocean": 10
+    "#c:is_ocean": 10
   },
   "enabled": true
 }

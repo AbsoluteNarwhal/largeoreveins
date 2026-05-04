@@ -15,7 +15,7 @@
   "type": "BLOB",
   "default_weight": 3,
   "biome_weights": {
-    "#minecraft:is_jungle": 8
+    "#c:is_jungle": 8
   },
   "enabled": true
 }

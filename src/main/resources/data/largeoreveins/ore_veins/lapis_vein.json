@@ -15,7 +15,7 @@
   "type": "BLOB",
   "default_weight": 2,
   "biome_weights": {
-    "#minecraft:is_desert": 10
+    "#c:is_desert": 10
   },
   "enabled": true
 }

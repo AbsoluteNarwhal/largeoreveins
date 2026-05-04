@@ -17,7 +17,7 @@
   "type": "VEIN",
   "default_weight": 7,
   "biome_weights": {
-    "#minecraft:is_plains": 12
+    "#c:is_plains": 12
   },
   "enabled": true
 }
