@@ -8,6 +8,7 @@ import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.LevelChunk;
+import net.minecraft.world.level.chunk.LevelChunkSection;
 
 import java.util.Random;
 
@@ -75,21 +76,31 @@ public class VeinPlacer {
         if (pos.getX() < chunkPos.getMinBlockX() || pos.getX() > chunkPos.getMaxBlockX()) return;
         if (pos.getZ() < chunkPos.getMinBlockZ() || pos.getZ() > chunkPos.getMaxBlockZ()) return;
 
-        BlockState existing = chunk.getBlockState(pos);
+        // get the chunk section for this Y position
+        int sectionIndex = chunk.getSectionIndex(pos.getY());
+        if (sectionIndex < 0 || sectionIndex >= chunk.getSectionsCount()) return;
+        LevelChunkSection section = chunk.getSection(sectionIndex);
+
+        int localX = pos.getX() & 15;
+        int localY = pos.getY() & 15;
+        int localZ = pos.getZ() & 15;
+
+        BlockState existing = section.getBlockState(localX, localY, localZ);
         ResourceLocation existingId = BuiltInRegistries.BLOCK.getKey(existing.getBlock());
 
         ResourceLocation replacement = vein.replaceBlocks().get(existingId);
         if (replacement == null) return;
 
-        // rare blocks (eg raw ore blocks)
         boolean useRare = vein.rareBlock() != null
-                && !vein.rareBlock().equals(ResourceLocation.parse("minecraft:air"))
-                && vein.rareBlockChance() > 0
-                && random.nextDouble() < vein.rareBlockChance();
+            && !vein.rareBlock().equals(ResourceLocation.parse("minecraft:air"))
+            && vein.rareBlockChance() > 0
+            && random.nextDouble() < vein.rareBlockChance();
 
         ResourceLocation blockToPlace = useRare ? vein.rareBlock() : replacement;
         Block block = BuiltInRegistries.BLOCK.get(blockToPlace);
+        if (block == null) return;
 
-        chunk.setBlockState(pos, block.defaultBlockState(), false);
+        // write directly to section storage to bypass update hooks and not cause insane TPS lag with sable
+        section.setBlockState(localX, localY, localZ, block.defaultBlockState(), false);
     }
 }
