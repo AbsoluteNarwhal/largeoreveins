@@ -89,11 +89,14 @@ public class OreVeinCategory implements IRecipeCategory<OreVeinConfig> {
         int color = 0xff404040;
         graphics.drawString(mc.font, VeinInfo.getName(vein).getString(), 0, y, color, false);
         y += 10;
-        graphics.drawString(mc.font, "Dimension: " + getDimensionName(mc, vein.dimension()), 0, y, color, false);
+        graphics.drawString(mc.font, Component.translatable("jei_text.largeoreveins.dimension").getString()
+                + getDimensionName(mc, vein.dimension()), 0, y, color, false);
         y += 10;
-        graphics.drawString(mc.font, "Y Range: " + vein.minY() + " to " + vein.maxY(), 0, y, color, false);
+        graphics.drawString(mc.font, Component.translatable("jei_text.largeoreveins.y_range").getString()
+                + vein.minY() + Component.translatable("jei_text.largeoreveins.to").getString() + vein.maxY(), 0, y, color, false);
         y += 10;
-        graphics.drawString(mc.font, "Weight: " + vein.defaultWeight() + " (" + VeinInfo.formatWeight(vein) + ")", 0, y, color, false);
+        graphics.drawString(mc.font, Component.translatable("jei_text.largeoreveins.weight").getString() + vein.defaultWeight()
+                + " (" + VeinInfo.formatWeight(vein) + ")", 0, y, color, false);
 
         List<String> commonBiomes = vein.biomeWeights().entrySet().stream()
             .filter(e -> e.getValue() > vein.defaultWeight())
@@ -102,7 +105,7 @@ public class OreVeinCategory implements IRecipeCategory<OreVeinConfig> {
 
         if (!commonBiomes.isEmpty()) {
             y += 10;
-            graphics.drawString(mc.font, "Commonly Found In:", 0, y, color, false);
+            graphics.drawString(mc.font, Component.translatable("jei_text.largeoreveins.commonly_found_in").getString(), 0, y, color, false);
             for (String biome : commonBiomes) {
                 y += 10;
                 graphics.drawString(mc.font, "  " + getBiomeName(mc, biome), 0, y, color, false);

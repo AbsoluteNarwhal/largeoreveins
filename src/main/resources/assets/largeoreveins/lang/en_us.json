@@ -16,6 +16,12 @@
   "ore_vein.largeoreveins.nether_gold_vein": "Gold Vein (Nether)",
   "ore_vein.largeoreveins.quartz_vein": "Quartz Vein",
 
+  "jei_text.largeoreveins.dimension": "Dimension: ",
+  "jei_text.largeoreveins.y_range": "Y Range: ",
+  "jei_text.largeoreveins.to": " to ",
+  "jei_text.largeoreveins.weight": "Weight: ",
+  "jei_text.largeoreveins.commonly_found_in": "Commonly found in: ",
+
   "biome_tag.c.is_badlands": "Badlands Biomes",
   "biome_tag.c.is_ocean": "Ocean Biomes",
   "biome_tag.c.is_plains": "Plains Biomes",
