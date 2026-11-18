@@ -2,15 +2,31 @@
   "id": "largeoreveins:copper_vein",
   "dimension": "minecraft:overworld",
   "replace_blocks": {
-    "minecraft:stone": "minecraft:copper_ore",
-    "minecraft:deepslate": "minecraft:deepslate_copper_ore",
-    "minecraft:andesite": "minecraft:copper_ore",
-    "minecraft:diorite": "minecraft:copper_ore",
-    "minecraft:granite": "minecraft:copper_ore",
-    "minecraft:tuff": "minecraft:deepslate_copper_ore"
+    "minecraft:stone": [
+      {"block": "minecraft:copper_ore", "weight": 19},
+      {"block": "minecraft:raw_copper_block", "weight": 1}
+    ],
+    "minecraft:deepslate": [
+      {"block": "minecraft:deepslate_copper_ore", "weight": 19},
+      {"block": "minecraft:raw_copper_block", "weight": 1}
+    ],
+    "minecraft:andesite": [
+      {"block": "minecraft:copper_ore", "weight": 19},
+      {"block": "minecraft:raw_copper_block", "weight": 1}
+    ],
+    "minecraft:diorite": [
+      {"block": "minecraft:copper_ore", "weight": 19},
+      {"block": "minecraft:raw_copper_block", "weight": 1}
+    ],
+    "minecraft:granite": [
+      {"block": "minecraft:copper_ore", "weight": 19},
+      {"block": "minecraft:raw_copper_block", "weight": 1}
+    ],
+    "minecraft:tuff": [
+      {"block": "minecraft:deepslate_copper_ore", "weight": 19},
+      {"block": "minecraft:raw_copper_block", "weight": 1}
+    ]
   },
-  "rare_block": "minecraft:raw_copper_block",
-  "rare_block_chance": 0.05,
   "maxY": 63,
   "minY": -10,
   "size": 40,

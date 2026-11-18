@@ -8,17 +8,19 @@ import net.minecraft.world.item.Item;
 import java.util.List;
 
 public class VeinInfo {
-    // Returns all veins that produce the given block as an output
+    // returns all veins that produce the given block as an output
     public static List<OreVeinConfig> getVeinsForOre(Item oreItem) {
         ResourceLocation oreId = BuiltInRegistries.ITEM.getKey(oreItem);
         ResourceLocation blockId = ResourceLocation.fromNamespaceAndPath(
-            oreId.getNamespace(), oreId.getPath()
+                oreId.getNamespace(), oreId.getPath()
         );
 
         return OreVeinConfigLoader.getAllVeins().values().stream()
-            .filter(OreVeinConfig::enabled)
-            .filter(v -> v.replaceBlocks().containsValue(blockId))
-            .toList();
+                .filter(OreVeinConfig::enabled)
+                .filter(v -> v.replaceBlocks().values().stream()
+                        .flatMap(List::stream)
+                        .anyMatch(wb -> wb.block().equals(blockId)))
+                .toList();
     }
 
     // get weight as a percentage across all veins in the same dimension

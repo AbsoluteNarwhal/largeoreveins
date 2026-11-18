@@ -2,15 +2,31 @@
   "id": "largeoreveins:iron_vein",
   "dimension": "minecraft:overworld",
   "replace_blocks": {
-    "minecraft:stone": "minecraft:iron_ore",
-    "minecraft:deepslate": "minecraft:deepslate_iron_ore",
-    "minecraft:andesite": "minecraft:iron_ore",
-    "minecraft:diorite": "minecraft:iron_ore",
-    "minecraft:granite": "minecraft:iron_ore",
-    "minecraft:tuff": "minecraft:deepslate_iron_ore"
+    "minecraft:stone": [
+      {"block": "minecraft:iron_ore", "weight": 19},
+      {"block": "minecraft:raw_iron_block", "weight": 1}
+    ],
+    "minecraft:deepslate": [
+      {"block": "minecraft:deepslate_iron_ore", "weight": 19},
+      {"block": "minecraft:raw_iron_block", "weight": 1}
+    ],
+    "minecraft:andesite": [
+      {"block": "minecraft:iron_ore", "weight": 19},
+      {"block": "minecraft:raw_iron_block", "weight": 1}
+    ],
+    "minecraft:diorite": [
+      {"block": "minecraft:iron_ore", "weight": 19},
+      {"block": "minecraft:raw_iron_block", "weight": 1}
+    ],
+    "minecraft:granite": [
+      {"block": "minecraft:iron_ore", "weight": 19},
+      {"block": "minecraft:raw_iron_block", "weight": 1}
+    ],
+    "minecraft:tuff": [
+      {"block": "minecraft:deepslate_iron_ore", "weight": 19},
+      {"block": "minecraft:raw_iron_block", "weight": 1}
+    ]
   },
-  "rare_block": "minecraft:raw_iron_block",
-  "rare_block_chance": 0.05,
   "maxY": 63,
   "minY": -20,
   "size": 35,

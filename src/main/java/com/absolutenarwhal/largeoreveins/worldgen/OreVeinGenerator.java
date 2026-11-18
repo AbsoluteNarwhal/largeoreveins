@@ -23,7 +23,6 @@ public class OreVeinGenerator {
     private static final int VEIN_CHUNK_RADIUS = 3;
 
     private static final Map<ResourceLocation, Set<Long>> ROLLED_CHUNKS = new HashMap<>();
-    private static final Map<ResourceLocation, Set<Long>> PLACED_CHUNKS = new HashMap<>();
     private static final Map<ResourceLocation, Map<Long, VeinOrigin>> VEIN_ORIGINS = new HashMap<>();
 
     private static final Queue<Map.Entry<ResourceLocation, ChunkPos>> PENDING =
@@ -33,19 +32,18 @@ public class OreVeinGenerator {
         PENDING.clear();
         ROLLED_CHUNKS.clear();
         VEIN_ORIGINS.clear();
-        PLACED_CHUNKS.clear();
     }
 
     public static void onChunkLoad(ChunkEvent.Load event) {
         if (!(event.getChunk() instanceof LevelChunk)) return;
         if (!(event.getLevel() instanceof ServerLevel level)) return;
 
-        ResourceLocation dimension = level.dimension().location();
         ChunkPos pos = event.getChunk().getPos();
 
-        if (PLACED_CHUNKS.getOrDefault(dimension, Collections.emptySet()).contains(pos.toLong())) return;
+        // dont regen veins on reload
+        if (PlacedChunksSavedData.get(level).isPlaced(pos)) return;
 
-        PENDING.add(Map.entry(dimension, pos));
+        PENDING.add(Map.entry(level.dimension().location(), pos));
     }
 
     public static void onServerTick(ServerTickEvent.Post event) {
@@ -57,16 +55,13 @@ public class OreVeinGenerator {
             ResourceLocation dimension = entry.getKey();
             ChunkPos pos = entry.getValue();
 
-            // skip if placed since being enqueued
-            if (PLACED_CHUNKS.getOrDefault(dimension, Collections.emptySet()).contains(pos.toLong())) continue;
-
             ServerLevel level = event.getServer().getLevel(
                     ResourceKey.create(Registries.DIMENSION, dimension)
             );
             if (level == null) continue;
 
-            // if chunk unloaded since being enqueued, don't drop it —
-            // it will re-enqueue itself via onChunkLoad when it reloads
+            // in case it was processed while sitting in the queue
+            if (PlacedChunksSavedData.get(level).isPlaced(pos)) continue;
             if (!level.hasChunk(pos.x, pos.z)) continue;
 
             processChunk(pos, dimension, level);
@@ -76,11 +71,10 @@ public class OreVeinGenerator {
 
     private static void processChunk(ChunkPos pos, ResourceLocation dimension, ServerLevel level) {
         List<OreVeinConfig> candidates = OreVeinConfigLoader.getVeinsForDimension(dimension)
-            .stream()
-            .filter(OreVeinConfig::enabled)
-            .toList();
+                .stream()
+                .filter(OreVeinConfig::enabled)
+                .toList();
 
-        // configs not loaded yet, re-queue for next tick
         if (candidates.isEmpty()) {
             PENDING.add(Map.entry(dimension, pos));
             return;
@@ -89,17 +83,14 @@ public class OreVeinGenerator {
         BlockPos centre = pos.getMiddleBlockPosition(level.getSeaLevel());
         Holder<Biome> biome = level.getBiome(centre);
 
-        // roll all neighbours so their origins exist before lookup
         for (int dx = -VEIN_CHUNK_RADIUS; dx <= VEIN_CHUNK_RADIUS; dx++) {
             for (int dz = -VEIN_CHUNK_RADIUS; dz <= VEIN_CHUNK_RADIUS; dz++) {
                 rollChunkIfNeeded(new ChunkPos(pos.x + dx, pos.z + dz), dimension, level, candidates, biome);
             }
         }
 
-        // place after rolling so all nearby origins are populated
         LevelChunk chunk = level.getChunk(pos.x, pos.z);
         Map<Long, VeinOrigin> origins = VEIN_ORIGINS.getOrDefault(dimension, Collections.emptyMap());
-        boolean anyPlaced = false;
 
         for (int dx = -VEIN_CHUNK_RADIUS; dx <= VEIN_CHUNK_RADIUS; dx++) {
             for (int dz = -VEIN_CHUNK_RADIUS; dz <= VEIN_CHUNK_RADIUS; dz++) {
@@ -112,13 +103,11 @@ public class OreVeinGenerator {
 
                 Random random = seededRandom(level.getSeed(), nearbyPos.x, nearbyPos.z, dimension);
                 VeinPlacer.placeInChunk(vein, origin.origin(), chunk, random);
-                anyPlaced = true;
             }
         }
 
-        if (anyPlaced || !origins.isEmpty()) {
-            PLACED_CHUNKS.computeIfAbsent(dimension, k -> new HashSet<>()).add(pos.toLong());
-        }
+        // mark as placed in chunk save data
+        PlacedChunksSavedData.get(level).markPlaced(pos);
     }
 
     private static void rollChunkIfNeeded(ChunkPos pos, ResourceLocation dimension, ServerLevel level, List<OreVeinConfig> candidates, Holder<Biome> biome) {

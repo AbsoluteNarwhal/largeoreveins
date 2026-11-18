@@ -72,23 +72,29 @@ public class OreVeinConfigLoader extends SimpleJsonResourceReloadListener {
         );
 
         // ore blocks to use
-        Map<ResourceLocation, ResourceLocation> replaceBlocks = new LinkedHashMap<>();
+        Map<ResourceLocation, List<WeightedBlock>> replaceBlocks = new LinkedHashMap<>();
         JsonObject rb = json.getAsJsonObject("replace_blocks");
         for (Map.Entry<String, JsonElement> e : rb.entrySet()) {
-            replaceBlocks.put(
-                ResourceLocation.parse(e.getKey()),
-                ResourceLocation.parse(e.getValue().getAsString())
-            );
+            ResourceLocation sourceBlock = ResourceLocation.parse(e.getKey());
+            JsonElement value = e.getValue();
+
+            if (value.isJsonArray()) {
+                // New format: [{"block": "minecraft:iron_ore", "weight": 19}, ...]
+                List<WeightedBlock> options = new ArrayList<>();
+                for (JsonElement element : value.getAsJsonArray()) {
+                    JsonObject obj = element.getAsJsonObject();
+                    ResourceLocation block = ResourceLocation.parse(obj.get("block").getAsString());
+                    int weight = obj.has("weight") ? obj.get("weight").getAsInt() : 1;
+                    options.add(new WeightedBlock(block, weight));
+                }
+                replaceBlocks.put(sourceBlock, options);
+            } else {
+                // convert to a single-entry list with weight 1
+                replaceBlocks.put(sourceBlock, List.of(
+                        new WeightedBlock(ResourceLocation.parse(value.getAsString()), 1)
+                ));
+            }
         }
-
-        // rare block
-        ResourceLocation rareBlock = json.has("rare_block")
-                ? ResourceLocation.parse(json.get("rare_block").getAsString())
-                : ResourceLocation.parse("minecraft:air");
-
-        double rareBlockChance = json.has("rare_block_chance")
-                ? json.get("rare_block_chance").getAsFloat()
-                : 0.05;
 
         // vein sizes
         int maxY = json.has("maxY")
@@ -127,7 +133,6 @@ public class OreVeinConfigLoader extends SimpleJsonResourceReloadListener {
 
         return new OreVeinConfig(
             id, dimension, replaceBlocks,
-            rareBlock, rareBlockChance,
             maxY, minY, size, type,
             defaultWeight, biomeWeights, enabled
         );

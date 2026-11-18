@@ -3,6 +3,7 @@ package com.absolutenarwhal.largeoreveins.integration;
 import com.absolutenarwhal.largeoreveins.LargeOreVeins;
 import com.absolutenarwhal.largeoreveins.veindata.OreVeinConfig;
 import com.absolutenarwhal.largeoreveins.veindata.VeinInfo;
+import com.absolutenarwhal.largeoreveins.veindata.WeightedBlock;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.drawable.IDrawable;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
@@ -65,16 +66,17 @@ public class OreVeinCategory implements IRecipeCategory<OreVeinConfig> {
     @Override
     public void setRecipe(IRecipeLayoutBuilder builder, OreVeinConfig vein, IFocusGroup focuses) {
         int x = 0;
-        List<Block> blocks = new ArrayList<>();
+        // Collect all unique output blocks across all replacement lists
+        List<Block> seen = new ArrayList<>();
 
-        for (ResourceLocation oreBlockId : vein.replaceBlocks().values()) {
-            Block block = BuiltInRegistries.BLOCK.get(oreBlockId);
-            if (blocks.contains(block)) continue;
-            blocks.add(block);
+        for (List<WeightedBlock> options : vein.replaceBlocks().values()) {
+            for (WeightedBlock wb : options) {
+                Block block = BuiltInRegistries.BLOCK.get(wb.block());
+                if (block == null || seen.contains(block)) continue;
+                seen.add(block);
 
-            if (block != null) {
                 builder.addSlot(RecipeIngredientRole.OUTPUT, x, 0)
-                    .addItemStack(new ItemStack(block.asItem()));
+                        .addItemStack(new ItemStack(block.asItem()));
                 x += 18;
             }
         }
